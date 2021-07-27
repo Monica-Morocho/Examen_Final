@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:h="http://xmlns.jcp.org/jsf/html" 
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:head>
+        <title>Agregar Pedido</title>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <script src="https://use.fontawesome.com/releases/v5.15.1/js/all.js" crossorigin="anonymous"></script>
+        <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700" rel="stylesheet" type="text/css" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="../css/styles.css" rel="stylesheet" type="text/css"/>
+    </h:head>
+
+    <h:body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+            <div class="container">
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav text-uppercase ml-auto">
+                        <li class="nav-item"><a class="nav-link js-scroll-trigger" href="../index.html">Pagina Principal</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- Masthead-->
+        <header class="masthead">
+            <div class="container">
+                <div class="masthead-subheading">
+                    <div class="masthead-heading text-uppercase">Listar Pedido</div>
+                    <h:form id="formulario01">
+                        <br></br>
+                        <label> Nombre comida:</label>
+                        <br></br>
+                        <h:inputText id="nombre" value="#{pedidoBean.nombreComida}" />
+                        <br></br>
+                        <br></br>
+                        <h:commandButton class="btn btn-primary btn-xl text-uppercase js-scroll-trigger" value="Buscar" action="#{pedidoBean.Inventario}" />
+                        <br></br>
+                        <br></br>  
+                        <h:dataTable value="#{pedidoBean.listaPedido}" var="ped" >
+                            <h:column>
+                                <f:facet name="header"># Pedido</f:facet>#{ped.numero}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Nombre cliente</f:facet>#{ped.nombre}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Nombre Comida</f:facet>#{ped.comida.nombre}
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Totale</f:facet>#{ped.total}
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+            </div>
+        </header>
+    </h:body>
+
+</html>
