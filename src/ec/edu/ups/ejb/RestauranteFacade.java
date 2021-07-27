@@ -22,9 +22,9 @@ public class RestauranteFacade extends AbstractFacade<Restaurantes>{
 		return entityManager;
 	}
 	
-	public Restaurantes buscarRestaurante (int id) {
+	public Restaurantes buscarRestaurante (String nombre) {
 		try {
-			String jpql = "SELECT rest FROM Restaurantes rest WHERE rest.idRestauran='" + id + "'";
+			String jpql = "SELECT rest FROM Restaurantes rest WHERE rest.nombre='" + nombre + "'";
 			Restaurantes restaurantes = (Restaurantes) entityManager.createQuery(jpql).getSingleResult();
 			return restaurantes;
 		} catch (Exception e) {
