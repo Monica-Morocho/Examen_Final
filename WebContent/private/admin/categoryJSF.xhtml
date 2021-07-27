@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+	<link rel="stylesheet" type="text/css" href="../../css/styles.css"
+		media="screen" />
+	<title>Categorías</title>
+
+</h:head>
+<h:body>
+	<header class="masthead">
+	<div class="container">
+		<div class="masthead-heading text-uppercase">Buscar Producto</div>
+		<div class="masthead-subheading">
+			<h3>Gestión de categorias</h3>
+			<h:form>
+				<h:dataTable value="#{categoryBean.list}" var="c" styleClass="tabla"
+					headerClass="cabeceraTabla" rowClasses="filaPar,filaImpar">
+					<h:column>
+						<f:facet name="header">Codigo</f:facet>#{c.id}</h:column>
+					<h:column>
+						<h:column>
+							<f:facet name="header">Nombre</f:facet>
+							<h:inputText value="#{c.nombre}" size="10"
+								rendered="#{c.editable}" />
+							<h:outputText value="#{c.nombre}" rendered="#{not c.editable}" />
+						</h:column>
+						<f:facet name="header">Descripción</f:facet>
+						<h:inputText value="#{c.descripcion}" size="10"
+							rendered="#{c.editable}" />
+						<h:outputText value="#{c.descripcion}"
+							rendered="#{not c.editable}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Accion</f:facet>
+						<h:commandLink value="Delete" action="#{categoryBean.delete(c)}" />
+					</h:column>
+				</h:dataTable>
+				<ul>
+					<li>Descripción:<h:inputText size="10"
+							value="#{categoryBean.descripcion}" /></li>
+				</ul>
+				<h:commandButton value="Add" action="#{categoryBean.add}" />
+			</h:form>
+		</div>
+	</div>
+	</header>
+</h:body>
+</html>

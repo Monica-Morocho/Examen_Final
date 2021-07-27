@@ -1,0 +1,50 @@
+header {
+	background-color: #1ab188;
+	text-align: center;
+	margin: 0px;
+	padding: 0%;
+}
+
+body {
+	color: pink;
+	font-family: "Titillium Web", sans-serif;
+}
+
+.seccion {
+	width: 100%;
+	text-align: center;
+	position: relative;
+	float: left;
+}
+
+.form {
+	background: rgba(19, 35, 47, 0.9);
+	padding: 40px;
+	max-width: 600px;
+	margin: 40px auto;
+	border-radius: 4px;
+	box-shadow: 0 4px 10px 4px rgba(191, 201, 202, 0.3);
+}
+
+.tabla {
+	border-collapse: collapse;
+}
+
+.cabeceraTabla {
+	text-align: center;
+	background: none repeat scroll 0 0 #E5E5E5;
+	border-bottom: 1px solid #BBBBBB;
+	padding: 8px;
+}
+
+.filaPar {
+	text-align: center;
+	background: none repeat scroll 0 0 #FFFFFFF;
+	border-top: 1px solid #BBBBBB;
+}
+
+.filaImpar {
+	text-align: center;
+	background: none repeat scroll 0 0 #F9F9F9;
+	border-top: 1px solid #BBBBBB;
+}
