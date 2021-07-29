@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
+import javax.faces.annotation.RequestParameterMap;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.Consumes;
@@ -44,20 +45,11 @@ public class ConsumoRest {
 	
 	@POST
 	@Path("/registro/cliente")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response crearEmpleado(@FormParam("nombre") String nombre, 
-			                       @FormParam("cedula") String cedula,
-			                       @FormParam("correo") String correo, 
-			                       @FormParam("direccion") String direccion ,
-			                       @FormParam("telefono") String telefono ) throws IOException{
-		cliente = new Clientes();
-		cliente.setNombre(nombre);
-		cliente.setCedula(cedula);
-		cliente.setCorreo(correo);
-		cliente.setDireccion(direccion);
-		cliente.setTelefono(telefono);
-		
+	public Response crearEmpleado(String jsonCliente) throws IOException{
+		Jsonb jsonb = JsonbBuilder.create();
+		Clientes cliente = jsonb.fromJson(jsonCliente, Clientes.class);
 		try {
 			ejbClienteFacade.create(cliente);
 		} catch (Exception e) {
@@ -65,7 +57,7 @@ public class ConsumoRest {
 			System.out.println("Error al crear el Cliente");
 			return Response.status(500).build();
 		}
-		return Response.ok("Cliente creado correctamente: "+cliente).build();
+		return Response.ok("Cliente creado correctamente: "+ jsonCliente).build();
 		
 	}
 	
@@ -151,14 +143,16 @@ public class ConsumoRest {
 		List<Reservas> reserva = new ArrayList<Reservas>();
 		reserva.clear();
 		
-		list = ejbReservaFacade.listarReservasCliente(cliente.getIdCliente());
+		list = ejbReservaFacade.findAll();
 		
 		
 		for (int i = 0; i < list.size(); i++) {			
+			if (list.get(i).getCliente().getCedula()==cedula) {
 				reserva.add(list.get(i));
+			}
 		}
 		
-		return Response.ok(jsonb.toJson(list)).build();
+		return Response.ok(jsonb.toJson(reserva)).build();
 		
 	}
 	
@@ -175,13 +169,15 @@ public class ConsumoRest {
 		List<Reservas> reserva = new ArrayList<Reservas>();
 		reserva.clear();
 		
-		list = ejbReservaFacade.listarReservasRestaurante(restaurante.getIdRestauran());
+		list = ejbReservaFacade.findAll();
 		
 		
 		for (int i = 0; i < list.size(); i++) {			
+			if (list.get(i).getRestaurante().getNombre()==nombre) {
 				reserva.add(list.get(i));
+			}
 		}
 		
-		return Response.ok(jsonb.toJson(list)).build();
+		return Response.ok(jsonb.toJson(reserva)).build();
 	}
 }	
