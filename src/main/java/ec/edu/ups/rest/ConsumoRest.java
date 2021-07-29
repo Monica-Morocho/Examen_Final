@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
-import javax.faces.annotation.RequestParameterMap;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.Consumes;
@@ -13,7 +12,6 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -38,10 +36,6 @@ public class ConsumoRest {
 	@EJB
 	private RestauranteFacade ejbRestauranteFacade;
 
-	private Clientes cliente;
-	private Reservas reserva;
-	private Restaurantes restauran;
-
 	
 	@POST
 	@Path("/registro/cliente")
@@ -54,78 +48,59 @@ public class ConsumoRest {
 			ejbClienteFacade.create(cliente);
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("Error al crear el Cliente");
 			return Response.status(500).build();
 		}
-		return Response.ok("Cliente creado correctamente: "+ jsonCliente).build();
+		return Response.ok("Cliente creado correctamente").build();
 		
 	}
 	
 	@POST
 	@Path("/registro/restauran")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response crearRestauran(@FormParam("nombre") String nombre,  
-			                       @FormParam("direccion") String direccion ,
-			                       @FormParam("telefono") String telefono, 
-			                       @FormParam("maxAforo") int maxAforo) throws IOException{
-		restauran = new Restaurantes();
-		restauran.setNombre(nombre);
-		restauran.setDireccion(direccion);
-		restauran.setTelefono(telefono);
-		restauran.setMaxAforo(maxAforo);
+	public Response crearRestauran(String jsonRestaurante) throws IOException{
+		Jsonb jsonb = JsonbBuilder.create();
+		Restaurantes restaurante = jsonb.fromJson(jsonRestaurante, Restaurantes.class);
 		
 		try {
-			ejbRestauranteFacade.create(restauran);
+			ejbRestauranteFacade.create(restaurante);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("Error al crear el Restaurante");
 			return Response.status(500).build();
 		}
-		return Response.ok("Restaurante creado correctamente: "+restauran).build();
+		return Response.ok("Restaurante creado correctamente: "+restaurante).build();
 		
 	}
 	
 	@POST
 	@Path("/registro/reservas")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response crearReservas(@FormParam("numeroP") int numeroP,  
-			                      @FormParam("fecha") String fecha ,
-			                      @FormParam("hora") String hora, 
-			                      @FormParam("cedula") String cedula,
-			                      @FormParam("nombreRestaurante") String nombreRestaurante) throws IOException{
+	public Response crearReservas(String jsonReserva) throws IOException{
+		Jsonb jsonb = JsonbBuilder.create();
+		ReservaTrasient reservaTra = jsonb.fromJson(jsonReserva, ReservaTrasient.class);
 		
-		cliente = new Clientes();
-		cliente = ejbClienteFacade.buscarCliente(cedula);
-		
+		Clientes cliente = ejbClienteFacade.buscarCliente(reservaTra.getCedula());
 		if(cliente != null) {
 			try {
-			reserva = new Reservas();
-			reserva.setNumeroP(numeroP);
-			reserva.setFecha(fecha);
-			reserva.setHora(hora);
-			
-			cliente = ejbClienteFacade.buscarCliente(cedula);
+			Reservas reserva = new Reservas();
+			reserva.setNumeroP(reservaTra.getNumeroPersona());
+			reserva.setFecha(reservaTra.getFecha());
+			reserva.setHora(reservaTra.getHora());
 			reserva.setCliente(cliente);
-			
-			restauran = new Restaurantes();
-			restauran = ejbRestauranteFacade.buscarRestaurante(nombreRestaurante);
-			
-			if(numeroP <= restauran.getMaxAforo()) {
-				reserva.setRestaurante(restauran);
-				ejbReservaFacade.create(reserva);
-				return Response.ok("Reserva creada correctamente: "+reserva).build();
-			}else{
-	        	return Response.ok("EL Restaurante no cuenta con espacio suficiente: "+restauran).build();
-	        }
+		
+			Restaurantes restauran = ejbRestauranteFacade.buscarRestaurante(reservaTra.getNombreRestaurante());
+			reserva.setRestaurante(restauran);
+			ejbReservaFacade.create(reserva);
+			return Response.ok("Reserva creada correctamente").build();
             
             }catch (Exception e){
                e.printStackTrace();
                return Response.status(500).build();
             }
         }else{
-        	return Response.ok("EL numero de cedula no existe: "+reserva).build();
+        	return Response.ok("EL numero de cedula no existe").build();
         }
 	}
 	
@@ -135,7 +110,7 @@ public class ConsumoRest {
 	public Response getIdPed(@QueryParam("cedula") String cedula) {
 
 		Jsonb jsonb = JsonbBuilder.create();
-		cliente = new    Clientes();
+		Clientes cliente = new    Clientes();
 		Clientes clientes = ejbClienteFacade.buscarCliente(cedula);
 		
 		List<Reservas> list = new ArrayList<>();
@@ -161,7 +136,7 @@ public class ConsumoRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarReservasRestauran(@QueryParam("nombre") String nombre) {
 		Jsonb jsonb = JsonbBuilder.create();
-		cliente = new    Clientes();
+		Clientes cliente = new    Clientes();
 		Restaurantes restaurante = ejbRestauranteFacade.buscarRestaurante(nombre);
 		
 		List<Reservas> list = new ArrayList<>();
