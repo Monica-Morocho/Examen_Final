@@ -27,25 +27,15 @@ public class ReservaFacade extends AbstractFacade<Reservas>{
 	}
 	
 	public List<Reservas> listarReservasCliente(int idcliente){
-		String jpql = "SELECT res FROM reservas res WHERE res.id_cliente='" + idcliente + "'";
+		String jpql = "select cl, rest, res from Clientes cl, Restaurantes rest, Reservas res WHERE res.cliente.idCliente="+idcliente+" and res.cliente.idCliente=cl.idCliente and res.restaurante.idRestauran=rest.idRestauran";
+		List<Reservas> reserva = entityManager.createQuery(jpql).getResultList();
+		return reserva;
+	}
+
+	public List<Reservas> listarReservasRestaurante(int idrestaurante){
+		String jpql = "select cl, rest, res from Clientes cl, Restaurantes rest, Reservas res WHERE res.restaurante.idRestauran="+idrestaurante+" and res.restaurante.idRestauran=rest.idRestauran and res.cliente.idCliente=cl.idCliente";
 		List<Reservas> reservas = entityManager.createQuery(jpql).getResultList();
 		return reservas;
 	}
 
-	public List<Reservas> listarReservasRestaurante(int idrestaurante){
-		String jpql = "SELECT res, clie, rest FROM reservas res, clientes cli, restaurantes rest WHERE res.id_restaurante='" + idrestaurante + "'";
-		List<Reservas> reservas = entityManager.createQuery(jpql).getResultList();
-		return reservas;
-	}
-	
-	public Reservas listarReservaCliente (int idcliente) {
-		try {
-			String jpql = "SELECT res FROM reservas res WHERE res.id_cliente='" + idcliente + "'";
-			Reservas reservas = (Reservas) entityManager.createQuery(jpql).getSingleResult();
-			return reservas;
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
 }

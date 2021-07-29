@@ -12,6 +12,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -107,28 +108,11 @@ public class ConsumoRest {
 	@GET
 	@Path("/listar/reserva/cliente")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getIdPed(@QueryParam("cedula") String cedula) {
-
+	public Response listarReservasCliente(@QueryParam("cedula") String cedula) {
 		Jsonb jsonb = JsonbBuilder.create();
-		Clientes cliente = new    Clientes();
-		Clientes clientes = ejbClienteFacade.buscarCliente(cedula);
-		
-		List<Reservas> list = new ArrayList<>();
-		list.clear();
-		List<Reservas> reserva = new ArrayList<Reservas>();
-		reserva.clear();
-		
-		list = ejbReservaFacade.findAll();
-		
-		
-		for (int i = 0; i < list.size(); i++) {			
-			if (list.get(i).getCliente().getCedula()==cedula) {
-				reserva.add(list.get(i));
-			}
-		}
-		
-		return Response.ok(jsonb.toJson(reserva)).build();
-		
+		Clientes cliente = ejbClienteFacade.buscarCliente(cedula);
+		List<Reservas> list = ejbReservaFacade.listarReservasCliente(cliente.getIdCliente());
+		return Response.ok(jsonb.toJson(list)).build();
 	}
 	
 	@GET
@@ -136,23 +120,8 @@ public class ConsumoRest {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response listarReservasRestauran(@QueryParam("nombre") String nombre) {
 		Jsonb jsonb = JsonbBuilder.create();
-		Clientes cliente = new    Clientes();
 		Restaurantes restaurante = ejbRestauranteFacade.buscarRestaurante(nombre);
-		
-		List<Reservas> list = new ArrayList<>();
-		list.clear();
-		List<Reservas> reserva = new ArrayList<Reservas>();
-		reserva.clear();
-		
-		list = ejbReservaFacade.findAll();
-		
-		
-		for (int i = 0; i < list.size(); i++) {			
-			if (list.get(i).getRestaurante().getNombre()==nombre) {
-				reserva.add(list.get(i));
-			}
-		}
-		
-		return Response.ok(jsonb.toJson(reserva)).build();
+		List<Reservas> list = ejbReservaFacade.listarReservasRestaurante(restaurante.getIdRestauran());
+		return Response.ok(jsonb.toJson(list)).build();
 	}
 }	

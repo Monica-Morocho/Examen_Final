@@ -5,6 +5,7 @@ import java.io.Serializable;
 @SuppressWarnings("Serial")
 public class ReservaTrasient implements Serializable{
 
+
 	private int numeroPersona;
 	private String fecha;
 	private String hora;
